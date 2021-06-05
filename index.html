@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link rel="stylesheet" href="./node_modules/nes.css/css/nes.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <script
+            src="https://kit.fontawesome.com/39c738d856.js"
+            crossorigin="anonymous"
+    ></script>
+    <title>Pokedex</title>
+</head>
+<body>
+
+<header id="header-main">
+    <a href="index.html" id="home"><h1>Pokedex</h1></a>
+
+    <form id="busqueda-pokemon" class="nes-container is-dark with-title is-rounded">
+        <label for="search-pokemon" class="title">SEARCH POKEMON</label>
+        <input class="nes-input is-dark" type="search" id="search-pokemon" name="search-pokemon"
+               placeholder="Search by name or ID"/>
+        <button class="nes-btn" type="submit">Search</button>
+    </form>
+
+    <div id="busqueda-avanzada-container" class="nes-container is-dark with-title is-rounded">
+        <div id="busqueda-avanzada-titulo" class="title nes-pointer">
+            <h2>ADVANCED SEARCH</h2>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 216" class="arrow down">
+                <g id="Capa_2" data-name="Capa 2">
+                    <g id="Capa_1-2" data-name="Capa 1">
+                        <polygon
+                                points="0 72 0 0 360 0 360 72 288 72 288 144 216 144 216 216 144 216 144 144 72 144 72 72 0 72"
+                                shape-rendering="crispEdges"/>
+                    </g>
+                </g>
+            </svg>
+        </div>
+
+        <form id="busqueda-avanzada-form" class="oculto">
+            <div id="types-pokemon">
+                <h3>Type</h3>
+                <div id="types-pokemon-container"></div>
+            </div>
+
+            <div id="abilities-pokemon">
+                <h3>Ability</h3>
+            </div>
+
+            <div id="habitats-pokemon">
+                <h3>Habitat</h3>
+                <div id="habitats-pokemon-container">
+                    <label>
+                        <input
+                                type="radio"
+                                name="habitat-pokemon"
+                                id="none"
+                                value="none"
+                                class="nes-radio is-dark"
+                        />
+                        <span>Any habitat</span>
+                    </label>
+                </div>
+            </div>
+
+            <button class="nes-btn" type="submit">Search</button>
+        </form>
+    </div>
+</header>
+
+<main>
+    <div id="overlay" class="oculto">
+            <button id="close-overlay" class="nes-btn">Esc</button>
+    </div>
+
+    <p id="cargando">Cargando...</p>
+    <div id="container-pokemons"></div>
+    <div id="load-buttons-container">
+        <button id="carga-pokemons" class="nes-btn">Load more</button>
+        <button id="carga-todos" class="nes-btn">Load all</button>
+    </div>
+
+</main>
+
+<a id="btn-scroll-top" class="nes-btn">^</a>
+
+<footer>
+    <p>Developed by Antonella Godoy. 2021</p>
+    <div>
+        <p>Check out my other projects in
+            <a href="https://github.com/antonellagodoyy"><i class="nes-icon github is-medium"></i></a>
+        </p>
+    </div>
+</footer>
+
+</body>
+
+<script src="app.js"></script>
+</html>
