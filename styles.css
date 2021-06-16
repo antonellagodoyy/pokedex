@@ -414,57 +414,97 @@ button, input[type="submit"] {
     color: var(--text-color-light);
     background-color: var(--type-water);
     box-shadow: 0 .5em var(--type-water), 0 -.5em var(--type-water), .5em 0 var(--type-water), -.5em 0 var(--type-water);
+footer {
+    margin-top: auto;
+    padding-top: 100px;
 }
 
 .is-type-electric {
     color: var(--text-color-dark);
     background-color: var(--type-electric);
     box-shadow: 0 .5em var(--type-electric), 0 -.5em var(--type-electric), .5em 0 var(--type-electric), -.5em 0 var(--type-electric);
+footer a {
+    color: var(--dark-color);
+    text-decoration: underline;
+    transition: color 0.2s ease-in;
 }
 
 .is-type-psychic {
     color: var(--text-color-light);
     background-color: var(--type-psychic);
     box-shadow: 0 .5em var(--type-psychic), 0 -.5em var(--type-psychic), .5em 0 var(--type-psychic), -.5em 0 var(--type-psychic);
+footer a:hover {
+    color: var(--mid-tone);
 }
 
 .is-type-ice {
     color: var(--text-color-dark);
     background-color: var(--type-ice);
     box-shadow: 0 .5em var(--type-ice), 0 -.5em var(--type-ice), .5em 0 var(--type-ice), -.5em 0 var(--type-ice);
+.slider {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
 }
 
 .is-type-dragon {
     color: var(--text-color-light);
     background-color: var(--type-dragon);
     box-shadow: 0 .5em var(--type-dragon), 0 -.5em var(--type-dragon), .5em 0 var(--type-dragon), -.5em 0 var(--type-dragon);
+.slider-track {
+    display: flex;
+    width: calc(1500px * 2);
+    animation: infiniteLoop 30s linear infinite;
 }
 
 .is-type-dark {
     color: var(--text-color-light);
     background-color: var(--type-dark);
     box-shadow: 0 .5em var(--type-dark), 0 -.5em var(--type-dark), .5em 0 var(--type-dark), -.5em 0 var(--type-dark);
+@keyframes infiniteLoop {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(-50%);
+    }
 }
 
 .is-type-fairy {
     color: var(--text-color-dark);
     background-color: var(--type-fairy);
     box-shadow: 0 .5em var(--type-fairy), 0 -.5em var(--type-fairy), .5em 0 var(--type-fairy), -.5em 0 var(--type-fairy);
+.slider-track img {
+    width: 100%;
 }
 
 .is-type-unknown {
     color: var(--text-color-dark);
     background-color: var(--type-unknown);
     box-shadow: 0 .5em var(--type-unknown), 0 -.5em var(--type-unknown), .5em 0 var(--type-unknown), -.5em 0 var(--type-unknown);
+#ash-gif {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    z-index: 9;
+    height: 18px;
 }
 
 .is-type-shadow {
     color: var(--text-color-dark);
     background-color: var(--type-shadow);
     box-shadow: 0 .5em var(--type-shadow), 0 -.5em var(--type-shadow), .5em 0 var(--type-shadow), -.5em 0 var(--type-shadow);
+.footer-text {
+    max-width: 1000px;
+    margin: auto;
+    text-align: center;
+    padding: 20px 20px 4px 20px;
 }
 /* END Types pokemon classes */
 
-footer {
-    margin-top: auto;
+@media (min-width: 1024px) {
+    .footer-text {
+        display: flex;
+        justify-content: space-between;
+    }
 }
