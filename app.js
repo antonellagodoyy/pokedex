@@ -1155,7 +1155,7 @@ function creaTiposPokemonCard($tiposPokemon, tipo) {
 
     $tipoPokemon.classList.add("type-pokemon", "nes-badge");
     $textoTipoPokemon.textContent = tipo["type"]["name"];
-    $textoTipoPokemon.classList.add(`is-type-${tipo["type"]["name"]}`);
+    $textoTipoPokemon.classList.add(`type-pokemon-color`);
 }
 
 function seteaTextoSinGuiones(string) {
