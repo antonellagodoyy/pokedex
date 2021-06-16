@@ -1,29 +1,8 @@
 :root {
-    --background-color: #0a0521;
-    --primary-color: #ec0266;
-    --accent-color: #00ec00;
-    --text-color-light: #f6f6f6;
-    --text-color-dark: #0A0A0A;
-    --type-poison: #8100ef;
-    --type-grass: #2B841D;
-    --type-fighting: #ff7400;
-    --type-flying: #058199;
-    --type-ground: #917014;
-    --type-rock: #483502;
-    --type-bug: #0A4E03;
-    --type-ghost: #B2FFFE;
-    --type-steel: #4c5252;
-    --type-fire: #e00707;
-    --type-water: #0C11BA;
-    --type-electric: #EBD400;
-    --type-psychic: #C93578;
-    --type-ice: #E9FEFF;
-    --type-dragon: #A11818;
-    --type-dark: #38393F;
-    --type-fairy: #ff99ca;
-    --type-normal: #B1955C;
-    --type-shadow: #A4B3A4;
-    --type-unknown: #EEEEEE;
+    --dark-color: #292919;
+    --mid-tone: #6b6b52;
+    --light-color: #b2b295;
+    --lighter-color: #cecead;
 }
 
 @font-face {
