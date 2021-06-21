@@ -47,6 +47,7 @@ document.querySelector("#carga-todos").addEventListener("click", () => {
 });
 
 document.querySelector("#busqueda-pokemon").addEventListener("submit", (e) => {
+    ocultaMensajeBusquedaFallida();
     limpiaContenedorPokemons();
     muestraCargando();
 
@@ -62,7 +63,7 @@ document.querySelector("#busqueda-pokemon").addEventListener("submit", (e) => {
 
     if (pokemonBuscado === "" || pokemonBuscado === "0") {
         ocultaCargando();
-        $containerPokemons.textContent = "No Pokemon matched your search!";
+        muestraMensajeBusquedaFallida();
     } else if (regularExpressionNumbers.test(pokemonBuscado)) {
 
         controllerBusquedaSimple = new AbortController();
@@ -77,7 +78,7 @@ document.querySelector("#busqueda-pokemon").addEventListener("submit", (e) => {
             .catch((error) => {
                 if (error.name !== "AbortError") {
                     ocultaCargando();
-                    $containerPokemons.textContent = "No Pokemon matched your search!";
+                    muestraMensajeBusquedaFallida();
                     console.error("Fallo la busqueda del Pokemon", error);
                 } else {
                     console.log("Fetch busqueda simple aborted");
@@ -97,7 +98,7 @@ document.querySelector("#busqueda-pokemon").addEventListener("submit", (e) => {
                         }
                         if ($containerPokemons.textContent === "") {
                             ocultaCargando();
-                            $containerPokemons.textContent = "No Pokemon matched your search!";
+                            muestraMensajeBusquedaFallida();
                         }
                     } catch (error) {
                         if (error.name !== "AbortError") {
@@ -135,7 +136,7 @@ async function encuentraPokemonPorBusquedaSimple(pokemon, pokemonBuscado, signal
 document
     .querySelector("#busqueda-avanzada-form")
     .addEventListener("submit", (e) => {
-
+        ocultaMensajeBusquedaFallida();
         limpiaContenedorPokemons();
         muestraCargando();
 
@@ -169,7 +170,7 @@ document
 
                         if ($containerPokemons.textContent === "") {
                             ocultaCargando();
-                            $containerPokemons.textContent = "No Pokemon matched your search.";
+                            muestraMensajeBusquedaFallida();
                         }
                     } catch (error) {
                         if (error.name !== "AbortError") {
@@ -178,7 +179,7 @@ document
                                 error);
 
                             ocultaCargando();
-                            $containerPokemons.textContent = "No Pokemon matched your search.";
+                            muestraMensajeBusquedaFallida();
                         } else {
                             console.log("Fetch busqueda avanzada aborted");
                         }
@@ -231,7 +232,7 @@ document.querySelector("main").addEventListener("click", function (e) {
     if (
         e.target.parentElement.name === "varieties" &&
         e.target.hasAttribute("value") &&
-        e.target.value != document.querySelector("h2").textContent
+        e.target.value !== document.querySelector("h4").textContent
     ) {
         const pokemonNombre = e.target.getAttribute("value");
         fetch(`https://pokeapi.co/api/v2/pokemon/${pokemonNombre}`)
@@ -286,7 +287,10 @@ function estableceImagenPokemon(response, $imagenPokemon) {
         $imagenPokemon.appendChild($imagenPokemonNula);
         $imagenPokemonNula.classList.add("nes-pokeball");
     } else {
-        $imagenPokemon.style.backgroundImage = `url(${pokemonImageLink})`;
+        const imagenPokemon = document.createElement('img');
+        $imagenPokemon.appendChild(imagenPokemon);
+        imagenPokemon.src = `${pokemonImageLink}`;
+        imagenPokemon.alt = `Image of ${response["name"]}`;
     }
 }
 
@@ -384,7 +388,7 @@ function creaInfoPokemon(response) {
 }
 
 function creaNombrePokemon(response) {
-    const $nombrePokemon = document.createElement("h2");
+    const $nombrePokemon = document.createElement("h4");
 
     document.querySelector("#overlay").appendChild($nombrePokemon);
 
@@ -832,15 +836,21 @@ document.querySelector("main").addEventListener("click", (e) => {
 
 document.querySelector("main").addEventListener("click", (e) => {
     if (e.target.classList.contains("habitat-pokemon")) {
+        ocultaBusquedaAvanzadaForm();
+        ocultaMensajeBusquedaFallida();
         limpiaContenedorPokemons();
-        document.querySelector("#overlay").classList.add("oculto");
+        muestraCargando();
+        ocultaOverlay();
 
         if (e.target.textContent === "unknown") {
-            $containerPokemons.textContent = "Ups. No matches found. Try again!";
+            ocultaCargando();
+            $containerPokemons.textContent = "Ups. There're not Pokemons in that habitat. Try again with another" +
+                " habitat!";
         } else {
             fetch(`https://pokeapi.co/api/v2/pokemon-habitat/${e.target.textContent}`)
                 .then((response) => response.json())
                 .then((response) => {
+                    ocultaCargando();
                     creaCardsPokemonsYPokemonsPorHabitat(response, "pokemon_species");
                 })
                 .catch((error) =>
@@ -855,13 +865,16 @@ document.querySelector("main").addEventListener("click", (e) => {
 
 document.querySelector("main").addEventListener("click", (e) => {
     if (e.target.classList.contains("type-pokemon")) {
+        ocultaBusquedaAvanzadaForm();
         limpiaContenedorPokemons();
+        muestraCargando();
+        ocultaOverlay();
         fetch(
             `https://pokeapi.co/api/v2/type/${e.target.textContent.toLowerCase()}`
         )
             .then((response) => response.json())
             .then((response) => {
-                document.querySelector("#overlay").classList.add("oculto");
+                ocultaCargando();
                 creaCardsPokemonsPorTipoYHabilidad(response, "pokemon");
             })
             .catch((error) =>
@@ -875,13 +888,17 @@ document.querySelector("main").addEventListener("click", (e) => {
 
 document.querySelector("main").addEventListener("click", (e) => {
     if (e.target.classList.contains("ability-pokemon")) {
+        ocultaOverlay();
+        ocultaBusquedaAvanzadaForm();
+        ocultaMensajeBusquedaFallida();
         limpiaContenedorPokemons();
+        muestraCargando();
         fetch(
             `https://pokeapi.co/api/v2/ability/${e.target.textContent.toLowerCase()}`
         )
             .then((response) => response.json())
             .then((response) => {
-                document.querySelector("#overlay").classList.add("oculto");
+                ocultaCargando();
                 creaCardsPokemonsPorTipoYHabilidad(response, "pokemon");
             })
             .catch((error) =>
