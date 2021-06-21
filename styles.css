@@ -36,7 +36,14 @@ header, main {
     max-width: 1000px;
     width: 100%;
     margin: auto;
-    padding: 0 10px;
+}
+
+main {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin: auto;
+    padding: 40px 10px;
 }
 
 .oculto {
@@ -87,7 +94,7 @@ button, input[type="submit"] {
 }
 
 .nes-checkbox.is-dark:checked > span::before {
-    box-shadow: 2px 2px 0 .020em,4px 2px 0 .020em,6px 2px 0 .020em,8px 2px 0 .020em,10px 2px 0 .020em,12px 2px 0 .020em,14px 2px 0 .020em,18px 2px 0 .020em var(--dark-color),20px 2px 0 .020em var(--dark-color),2px 4px 0 .020em,16px 4px 0 .020em var(--dark-color),18px 4px 0 .020em var(--dark-color),20px 4px 0 .020em var(--dark-color),2px 6px 0 .020em var(--dark-color),14px 6px 0 .020em var(--dark-color),16px 6px 0 .020em var(--dark-color),2px 8px 0 .020em var(--dark-color),4px 8px 0 .020em var(--dark-color),12px 8px 0 .020em var(--dark-color),14px 8px 0 .020em var(--dark-color),2px 10px 0 .020em,4px 10px 0 .020em var(--dark-color),6px 10px 0 .020em var(--dark-color),10px 10px 0 .020em var(--dark-color),12px 10px 0 .020em var(--dark-color),16px 10px 0 .020em,2px 12px 0 .020em,6px 12px 0 .020em var(--dark-color),8px 12px 0 .020em var(--dark-color),10px 12px 0 .020em var(--dark-color),16px 12px 0 .020em,2px 14px 0 .020em,8px 14px 0 .020em var(--dark-color),16px 14px 0 .020em,2px 16px 0 .020em,4px 16px 0 .020em,6px 16px 0 .020em,8px 16px 0 .020em,10px 16px 0 .020em,12px 16px 0 .020em,14px 16px 0 .020em,16px 16px 0 .020em;
+    box-shadow: 2px 2px 0 .020em, 4px 2px 0 .020em, 6px 2px 0 .020em, 8px 2px 0 .020em, 10px 2px 0 .020em, 12px 2px 0 .020em, 14px 2px 0 .020em, 18px 2px 0 .020em var(--dark-color), 20px 2px 0 .020em var(--dark-color), 2px 4px 0 .020em, 16px 4px 0 .020em var(--dark-color), 18px 4px 0 .020em var(--dark-color), 20px 4px 0 .020em var(--dark-color), 2px 6px 0 .020em var(--dark-color), 14px 6px 0 .020em var(--dark-color), 16px 6px 0 .020em var(--dark-color), 2px 8px 0 .020em var(--dark-color), 4px 8px 0 .020em var(--dark-color), 12px 8px 0 .020em var(--dark-color), 14px 8px 0 .020em var(--dark-color), 2px 10px 0 .020em, 4px 10px 0 .020em var(--dark-color), 6px 10px 0 .020em var(--dark-color), 10px 10px 0 .020em var(--dark-color), 12px 10px 0 .020em var(--dark-color), 16px 10px 0 .020em, 2px 12px 0 .020em, 6px 12px 0 .020em var(--dark-color), 8px 12px 0 .020em var(--dark-color), 10px 12px 0 .020em var(--dark-color), 16px 12px 0 .020em, 2px 14px 0 .020em, 8px 14px 0 .020em var(--dark-color), 16px 14px 0 .020em, 2px 16px 0 .020em, 4px 16px 0 .020em, 6px 16px 0 .020em, 8px 16px 0 .020em, 10px 16px 0 .020em, 12px 16px 0 .020em, 14px 16px 0 .020em, 16px 16px 0 .020em;
 }
 
 .nes-select.is-dark select {
@@ -121,8 +128,8 @@ button, input[type="submit"] {
 
 #btn-scroll-top {
     position: fixed;
-    bottom: 26px;
-    right: 26px;
+    bottom: 20px;
+    right: 20px;
     z-index: 9999;
     font-weight: bolder;
     color: var(--lighter-color);
@@ -321,7 +328,17 @@ button, input[type="submit"] {
 }
 
 #carga-pokemons {
-    margin-right: 16px;
+    margin-right: 26px;
+}
+
+#cargando {
+    width: 150px;
+    margin: 0 auto;
+}
+
+#text-error-search {
+    max-width: 60%;
+    margin: 80px auto;
 }
 
 .card.card {
@@ -329,14 +346,31 @@ button, input[type="submit"] {
     width: 235px;
     display: flex;
     flex-direction: column;
+    align-items: center;
 }
 
 .pokemon-image {
+    position: relative;
     width: 90px;
     height: 90px;
-    background-size: cover;
-    background-position: center center;
-    margin: auto;
+    font-size: 10px;
+}
+
+.pokemon-image img {
+    width: 100%;
+    height: 100%;
+}
+
+.pokemon-image::after{
+    content: '';
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    background: rgb(178, 178, 149);
+    mix-blend-mode: color;
 }
 
 .pokemon-image,
@@ -344,19 +378,16 @@ button, input[type="submit"] {
     pointer-events: none;
 }
 
-.card .pokemon-name {
-    text-align: center;
-}
-
 .pokemon-name {
     text-transform: uppercase;
+    text-align: center;
 }
 
 .types-pokemon-container {
     display: flex;
     flex-direction: column;
     width: min-content;
-    margin: 10px auto;
+    margin: auto;
     font-size: 10px;
     text-transform: capitalize;
 }
@@ -365,7 +396,7 @@ button, input[type="submit"] {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    margin: 40px 0;
+    margin-bottom: 40px;
 }
 
 #overlay {
@@ -411,8 +442,7 @@ button, input[type="submit"] {
 }
 
 footer {
-    margin-top: auto;
-    padding-top: 100px;
+    padding-top: 30px;
 }
 
 footer a {
@@ -462,12 +492,13 @@ footer a:hover {
     max-width: 1000px;
     margin: auto;
     text-align: center;
-    padding: 20px 20px 4px 20px;
+    padding: 20px 50px 4px 50px;
 }
 
 @media (min-width: 1024px) {
     .footer-text {
         display: flex;
         justify-content: space-between;
+        padding: 20px 20px 4px 20px;
     }
 }
