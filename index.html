@@ -77,7 +77,18 @@
         <button id="close-overlay" class="nes-btn">Esc</button>
     </div>
 
-    <p id="cargando">Cargando...</p>
+    <img id="cargando" src="assets/cargandoAnimacion.gif" alt="Animation of loading">
+
+    <div id="text-error-search" class="oculto">
+        <p>No pokemons were found for your search. Try again!</p>
+        <p>Tips for your search:</p>
+        <ul>
+            <li>A pokemon can only have 2 or less types.</li>
+            <li>The ID of the Pokemons starts in #1.</li>
+            <li>Try to search at least a part or even a letter of the pokemon's name, and you'll find it!</li>
+        </ul>
+    </div>
+
     <div id="container-pokemons"></div>
     <div id="load-buttons-container">
         <button id="carga-pokemons" class="nes-btn">Load more</button>
