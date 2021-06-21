@@ -363,6 +363,10 @@ function muestraOverlay() {
     document.querySelector("#overlay").appendChild($iconoCerrarOverlay);
 }
 
+function ocultaOverlay () {
+    document.querySelector("#overlay").classList.add("oculto");
+}
+
 function creaInfoPokemon(response) {
     creaNombrePokemon(response);
     creaIDPokemon(response);
@@ -1202,3 +1206,11 @@ document.querySelector("#btn-scroll-top").addEventListener("click", (e) => {
         e.target.setAttribute("href", "#header-overlay");
     }
 });
+
+function muestraMensajeBusquedaFallida() {
+    document.querySelector('#text-error-search').classList.remove('oculto');
+}
+
+function ocultaMensajeBusquedaFallida() {
+    document.querySelector('#text-error-search').classList.add('oculto');
+}
