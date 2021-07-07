@@ -162,9 +162,9 @@ document
                         signalBusquedaAvanzada = controllerBusquedaAvanzada.signal;
 
                         for (let i = 0; i < response["results"].length; i++) {
-                            console.log($typesPokemonForm[0].value +'  '+$typesPokemonForm[0].checked);
-                            console.log($typesPokemonForm[2].value +'  '+$typesPokemonForm[2].checked);
-                            console.log($typesPokemonForm[4].value +'  '+$typesPokemonForm[4].checked);
+                            console.log($typesPokemonForm[0].value + "  " + $typesPokemonForm[0].checked);
+                            console.log($typesPokemonForm[2].value + "  " + $typesPokemonForm[2].checked);
+                            console.log($typesPokemonForm[4].value + "  " + $typesPokemonForm[4].checked);
                             await encuentraPokemonBusquedaAvanzada(response["results"][i], habitatRequerido, abilitySelectedIndex, abilitySelected, $typesPokemonForm, signalBusquedaAvanzada);
                         }
 
@@ -202,7 +202,7 @@ function obtieneDatosRequeridosBusquedaAvanzada() {
         "#busqueda-avanzada-form [name='type-pokemon']"
     );
 
-    console.log('En funcion OBTIENEDATOSREQUERIDOSBUSQUEDAAVANZADA');
+    console.log("En funcion OBTIENEDATOSREQUERIDOSBUSQUEDAAVANZADA");
 
     return {habitatRequerido, abilitySelectedIndex, abilitySelected, $typesPokemonForm};
 }
@@ -214,6 +214,8 @@ $containerPokemons.addEventListener("click", function (e) {
             .then((response) => response.json())
             .then((response) => {
                 muestraOverlay();
+                ocultaScrollBody();
+                blurPage();
                 creaInfoPokemon(response);
             })
             .catch((error) =>
@@ -224,6 +226,8 @@ $containerPokemons.addEventListener("click", function (e) {
 
 document.querySelector("main").addEventListener("click", function (e) {
     if (e.target.id === "close-overlay") {
+        muestraScrollBody();
+        unBlurPage();
         e.target.parentElement.classList.toggle("oculto");
     }
 });
@@ -239,6 +243,8 @@ document.querySelector("main").addEventListener("click", function (e) {
             .then((response) => response.json())
             .then((response) => {
                 muestraOverlay();
+                ocultaScrollBody();
+                blurPage();
                 creaInfoPokemon(response);
             })
             .catch((error) =>
@@ -273,7 +279,7 @@ function creaCardsPokemonsYPokemonsPorHabitat(response, propiedadDelObjeto) {
                 $cardPokemon.setAttribute("data-pokeID", response["id"]);
 
                 response["types"].forEach((tipo) => {
-                    creaTiposPokemonCard($tiposPokemon, tipo);
+                    creaTiposPokemonBadge($tiposPokemon, tipo);
                 });
             })
             .catch((error) => console.error("Fallo la carga del pokemon", error));
@@ -287,7 +293,7 @@ function estableceImagenPokemon(response, $imagenPokemon) {
         $imagenPokemon.appendChild($imagenPokemonNula);
         $imagenPokemonNula.classList.add("nes-pokeball");
     } else {
-        const imagenPokemon = document.createElement('img');
+        const imagenPokemon = document.createElement("img");
         $imagenPokemon.appendChild(imagenPokemon);
         imagenPokemon.src = `${pokemonImageLink}`;
         imagenPokemon.alt = `Image of ${response["name"]}`;
@@ -316,7 +322,7 @@ function creaCardsPokemonsBuscados(response) {
     $cardPokemon.setAttribute("data-pokeID", response["id"]);
 
     response["types"].forEach((tipo) => {
-        creaTiposPokemonCard($tiposPokemon, tipo);
+        creaTiposPokemonBadge($tiposPokemon, tipo);
     });
 }
 
@@ -346,7 +352,7 @@ function creaCardsPokemonsPorTipoYHabilidad(response, propiedadDelObjeto) {
                 $cardPokemon.setAttribute("data-pokeID", response["id"]);
 
                 response["types"].forEach((tipo) => {
-                    creaTiposPokemonCard($tiposPokemon, tipo);
+                    creaTiposPokemonBadge($tiposPokemon, tipo);
                 });
             })
             .catch((error) => console.error("Fallo la carga del pokemon", error));
@@ -355,6 +361,7 @@ function creaCardsPokemonsPorTipoYHabilidad(response, propiedadDelObjeto) {
 
 function muestraOverlay() {
     document.querySelector("#overlay").classList.remove("oculto");
+
     const $iconoCerrarOverlay = document
         .querySelector("#overlay")
         .removeChild(document.querySelector("#close-overlay"));
@@ -367,7 +374,7 @@ function muestraOverlay() {
     document.querySelector("#overlay").appendChild($iconoCerrarOverlay);
 }
 
-function ocultaOverlay () {
+function ocultaOverlay() {
     document.querySelector("#overlay").classList.add("oculto");
 }
 
@@ -375,15 +382,21 @@ function creaInfoPokemon(response) {
     creaNombrePokemon(response);
     creaIDPokemon(response);
     creaVariedadesPokemon(response);
-    creaDescripcionPokemon(response);
     creaImagenPokemon(response);
-    creaPesoPokemon(response);
-    creaAlturaPokemon(response);
     creaTiposPokemon(response);
-    creaDamageStatsPokemon(response);
+    creaContainerPesoAlturaYHabitat();
+    creaAlturaPokemon(response);
+    creaPesoPokemon(response);
     creaHabitatPokemon(response);
-    creaHabilidadesPokemon(response);
+    putSeparationBar();
+    creaDescripcionPokemon(response);
+    putSeparationBar();
+    creaDamageStatsPokemon(response);
+    putSeparationBar();
     creaStatsPokemon(response);
+    putSeparationBar();
+    creaHabilidadesPokemon(response);
+    putSeparationBar();
     creaCadenaEvolutivaPokemon(response);
 }
 
@@ -400,14 +413,19 @@ function creaIDPokemon(response) {
     const $IDPokemon = document.createElement("p");
 
     document.querySelector("#overlay").appendChild($IDPokemon);
+    $IDPokemon.classList.add("id-pokemon");
 
     $IDPokemon.textContent = `No. ${response["id"]}`;
 }
 
 function creaVariedadesPokemon(response) {
+    const $variedadesPokemonContainer = document.createElement("div");
     const $variedadesPokemon = document.createElement("select");
 
-    document.querySelector("#overlay").appendChild($variedadesPokemon);
+    document.querySelector("#overlay").appendChild($variedadesPokemonContainer);
+    $variedadesPokemonContainer.appendChild($variedadesPokemon);
+
+    $variedadesPokemonContainer.classList.add("nes-select", "is-dark", "varieties-container");
 
     fetch(response["species"]["url"])
         .then((response) => response.json())
@@ -427,7 +445,7 @@ function creaVariedadesPokemon(response) {
             for (let i = 0; i < $variedadesPokemon.length; i++) {
                 if (
                     $variedadesPokemon.options[i].text ===
-                    document.querySelector("#overlay h2").textContent
+                    document.querySelector("#overlay h4").textContent
                 ) {
                     $variedadesPokemon.options[i].selected = true;
                 }
@@ -439,6 +457,7 @@ function creaDescripcionPokemon(response) {
     const $descripcionPokemon = document.createElement("p");
 
     document.querySelector("#overlay").appendChild($descripcionPokemon);
+    $descripcionPokemon.classList.add("description-pokemon-container");
 
     fetch(response["species"]["url"])
         .then((response) => response.json())
@@ -471,41 +490,53 @@ function creaImagenPokemon(response) {
     estableceImagenPokemon(response, $imagenPokemon);
 }
 
+function creaContainerPesoAlturaYHabitat () {
+    const $container = document.createElement("div");
+    $container.classList.add("weight-height-habitat-container");
+    document.querySelector("#overlay").appendChild($container);
+}
+
 function creaPesoPokemon(response) {
+    const $pesoPokemonContainer = document.createElement("div");
     const $pesoPokemon = document.createElement("p");
 
-    document.querySelector("#overlay").appendChild($pesoPokemon);
+    document.querySelector(".weight-height-habitat-container").appendChild($pesoPokemonContainer);
+    $pesoPokemonContainer.appendChild($pesoPokemon);
 
-    seteaNumeroDecimal(response, "weight", $pesoPokemon, "kg");
+    $pesoPokemonContainer.classList.add("weight-pokemon-container");
+    seteaNumeroDecimal(response, "weight", $pesoPokemon, "kg", "WT");
 }
 
 function creaAlturaPokemon(response) {
+    const $alturaPokemonContainer = document.createElement("div");
     const $alturaPokemon = document.createElement("p");
 
-    document.querySelector("#overlay").appendChild($alturaPokemon);
+    document.querySelector(".weight-height-habitat-container").appendChild($alturaPokemonContainer);
+    $alturaPokemonContainer.appendChild($alturaPokemon);
 
-    seteaNumeroDecimal(response, "height", $alturaPokemon, "m");
+    $alturaPokemonContainer.classList.add("height-pokemon-container");
+    seteaNumeroDecimal(response, "height", $alturaPokemon, "m", "HT");
 }
 
-function seteaNumeroDecimal(response, propiedadString, $propiedad, unidad) {
+function seteaNumeroDecimal(response, propiedadString, $propiedad, unidad, abreviacion) {
     if (String(response[propiedadString]).length === 1) {
-        $propiedad.textContent = `0.${response[propiedadString]} ${unidad}`;
+        $propiedad.textContent = `${abreviacion} 0.${response[propiedadString]} ${unidad}`;
     } else if (String(response[propiedadString]).length === 2) {
-        $propiedad.textContent = `${String(response[propiedadString])[0]}.${
+        $propiedad.textContent = `${abreviacion} ${String(response[propiedadString])[0]}.${
             String(response[propiedadString])[1]
         } ${unidad}`;
     } else if (String(response[propiedadString]).length === 3) {
-        $propiedad.textContent = `${String(response[propiedadString])[0]}${
+        $propiedad.textContent = `${abreviacion} ${String(response[propiedadString])[0]}${
             String(response[propiedadString])[1]
         }.${String(response[propiedadString])[2]} ${unidad}`;
     } else if (String(response[propiedadString]).length === 4) {
-        $propiedad.textContent = `${String(response[propiedadString])[0]}${
+        $propiedad.textContent = `${abreviacion} ${String(response[propiedadString])[0]}${
             String(response[propiedadString])[1]
         }${String(response[propiedadString])[2]}.${
             String(response[propiedadString])[3]
         } ${unidad}`;
     } else if (String(response[propiedadString]).length === 5) {
-        $propiedad.textContent = `${String(response[propiedadString])[0]}${
+        $propiedad.textContent = `${abreviacion} ${String(response[propiedadString])[0]}${
             String(response[propiedadString])[1]
         }${String(response[propiedadString])[2]}${
             String(response[propiedadString])[3]
@@ -518,39 +549,35 @@ function creaTiposPokemon(response) {
 
     document.querySelector("#overlay").appendChild($tiposPokemon);
 
-    $tiposPokemon.classList = "types-pokemon-container";
+    $tiposPokemon.classList.add("types-pokemon-container");
 
     response["types"].forEach((tipo) => {
-        const $tipoPokemon = document.createElement("div");
-        const $textoTipoPokemon = document.createElement("p");
-
-        $tiposPokemon.appendChild($tipoPokemon);
-        $tipoPokemon.appendChild($textoTipoPokemon);
-
-        $textoTipoPokemon.classList = "type-pokemon";
-
-        $textoTipoPokemon.textContent = tipo["type"]["name"];
+        creaTiposPokemonBadge($tiposPokemon, tipo);
     });
 }
 
 function creaDamageStatsPokemon(response) {
     const $damageStatsContainer = document.createElement("div");
     const $titleDamageContainer = document.createElement("p");
+    const $statsContainer = document.createElement("div");
     const $damageFromContainer = document.createElement("div");
     const $titleDamageFromContainer = document.createElement("p");
     const $damageToContainer = document.createElement("div");
     const $titleDamageToContainer = document.createElement("p");
 
-    $titleDamageContainer.textContent = "Damage stats";
+    $damageStatsContainer.classList.add("damage-stats-container");
+    $titleDamageContainer.textContent = "DAMAGE STATS";
     $titleDamageFromContainer.textContent = "From";
     $titleDamageToContainer.textContent = "To";
+    $statsContainer.classList.add("damage-stats-container-inner");
     $damageFromContainer.id = "damage-from-container";
     $damageToContainer.id = "damage-to-container";
 
     document.querySelector("#overlay").appendChild($damageStatsContainer);
     $damageStatsContainer.appendChild($titleDamageContainer);
-    $damageStatsContainer.appendChild($damageFromContainer);
-    $damageStatsContainer.appendChild($damageToContainer);
+    $damageStatsContainer.appendChild($statsContainer);
+    $statsContainer.appendChild($damageFromContainer);
+    $statsContainer.appendChild($damageToContainer);
     $damageFromContainer.appendChild($titleDamageFromContainer);
     $damageToContainer.appendChild($titleDamageToContainer);
 
@@ -587,19 +614,21 @@ function creaStat(response, container, propiedad, cantidadDamage) {
                     ).textContent = `x${numberDamage + cantidadDamage}`;
                 } else {
                     const $statDamageContainer = document.createElement("div");
-                    const $tipoPokemon = document.createElement("div");
-                    const $textoTipoPokemon = document.createElement("p");
+                    const $tipoPokemon = document.createElement("a");
+                    const $textoTipoPokemon = document.createElement("span");
                     const $statCantidad = document.createElement("p");
+
                     container.appendChild($statDamageContainer);
                     $statDamageContainer.appendChild($tipoPokemon);
                     $statDamageContainer.appendChild($statCantidad);
                     $tipoPokemon.appendChild($textoTipoPokemon);
 
                     $statDamageContainer.id = `damage_from_${tipo["name"]}`;
-                    $textoTipoPokemon.classList = "type-pokemon";
+                    $tipoPokemon.classList.add("type-pokemon", "nes-badge");
+                    $textoTipoPokemon.classList.add("type-pokemon-color");
                     $textoTipoPokemon.textContent = tipo["name"];
                     $statCantidad.textContent = `x${cantidadDamage}`;
-                    $statCantidad.classList = "amount-damage";
+                    $statCantidad.classList.add("amount-damage");
                 }
             }
             if (propiedad.includes("to")) {
@@ -613,8 +642,8 @@ function creaStat(response, container, propiedad, cantidadDamage) {
                     ).textContent = `x${numberDamage + cantidadDamage}`;
                 } else {
                     const $statDamageContainer = document.createElement("div");
-                    const $tipoPokemon = document.createElement("div");
-                    const $textoTipoPokemon = document.createElement("p");
+                    const $tipoPokemon = document.createElement("a");
+                    const $textoTipoPokemon = document.createElement("span");
                     const $statCantidad = document.createElement("p");
                     container.appendChild($statDamageContainer);
                     $statDamageContainer.appendChild($tipoPokemon);
@@ -622,10 +651,11 @@ function creaStat(response, container, propiedad, cantidadDamage) {
                     $tipoPokemon.appendChild($textoTipoPokemon);
 
                     $statDamageContainer.id = `damage_to_${tipo["name"]}`;
-                    $textoTipoPokemon.classList = "type-pokemon";
+                    $tipoPokemon.classList.add("type-pokemon", "nes-badge");
+                    $textoTipoPokemon.classList.add("type-pokemon-color");
                     $textoTipoPokemon.textContent = tipo["name"];
                     $statCantidad.textContent = `x${cantidadDamage}`;
-                    $statCantidad.classList = "amount-damage";
+                    $statCantidad.classList.add("amount-damage");
                 }
             }
         });
@@ -661,13 +691,16 @@ function ordenaStats(container) {
 
 function creaHabitatPokemon(response) {
     const $habitatPokemonContainer = document.createElement("div");
-    $habitatPokemonContainer.textContent = "Habitat";
+    const $habitatPokemonTitle = document.createElement("p");
     const $habitatPokemon = document.createElement("a");
 
-    document.querySelector("#overlay").appendChild($habitatPokemonContainer);
+    document.querySelector(".weight-height-habitat-container").appendChild($habitatPokemonContainer);
+    $habitatPokemonContainer.appendChild($habitatPokemonTitle);
     $habitatPokemonContainer.appendChild($habitatPokemon);
 
-    $habitatPokemon.classList = "habitat-pokemon";
+    $habitatPokemonContainer.classList.add("habitat-pokemon-container");
+    $habitatPokemonTitle.textContent = "HABITAT:";
+    $habitatPokemon.classList.add("habitat-pokemon");
 
     fetch(response["species"]["url"])
         .then((response) => response.json())
@@ -685,24 +718,30 @@ function creaHabitatPokemon(response) {
 
 function creaHabilidadesPokemon(response) {
     const $habilidadesPokemon = document.createElement("div");
+    const $habiidadesPokemonTitle = document.createElement("p");
 
     document.querySelector("#overlay").appendChild($habilidadesPokemon);
+    $habilidadesPokemon.appendChild($habiidadesPokemonTitle);
 
-    $habilidadesPokemon.classList = "abilities-pokemon-container";
+    $habilidadesPokemon.classList.add("abilities-pokemon-container");
+    $habiidadesPokemonTitle.textContent = "ABILITIES";
 
     response["abilities"].forEach((habilidad) => {
         const $habilidadPokemon = document.createElement("div");
         const $habilidadNombre = document.createElement("p");
-        const $iconoInfoHabilidad = document.createElement("i");
+        const $iconoInfoHabilidad = document.createElement("img");
 
         $habilidadesPokemon.appendChild($habilidadPokemon);
         $habilidadPokemon.appendChild($habilidadNombre);
         $habilidadPokemon.appendChild($iconoInfoHabilidad);
 
+        $habilidadPokemon.classList.add("ability-container");
         $habilidadNombre.textContent = habilidad["ability"]["name"];
-        $habilidadNombre.classList = "ability-pokemon";
-        $iconoInfoHabilidad.classList = "fas fa-info-circle icono-info-habilidad";
+        $habilidadNombre.classList.add("ability-pokemon");
+        $iconoInfoHabilidad.classList.add("icono-info-habilidad");
         $iconoInfoHabilidad.id = $habilidadNombre.textContent;
+        $iconoInfoHabilidad.src = "assets/infoIcon.png";
+        $iconoInfoHabilidad.alt = "Button to see the description of the ability.";
     });
 
     document
@@ -712,32 +751,39 @@ function creaHabilidadesPokemon(response) {
                 fetch(`https://pokeapi.co/api/v2/ability/${e.target.id}/`)
                     .then((response) => response.json())
                     .then((response) => {
-                        const $habilidadesPokemonOverlay = document.createElement("div");
 
-                        $habilidadesPokemonOverlay.innerHTML = "";
+                        if (document.querySelector(".abilities-pokemon-overlay") === null) {
+                            const $habilidadesPokemonOverlay = document.createElement("div");
 
-                        const $iconoCerrarHabilidad = document.createElement("i");
-                        const $habilidadNombre = document.createElement("p");
-                        const $habilidadDescripcion = document.createElement("p");
+                            $habilidadesPokemonOverlay.innerHTML = "";
 
-                        document
-                            .querySelector(".abilities-pokemon-container")
-                            .appendChild($habilidadesPokemonOverlay);
-                        $habilidadesPokemonOverlay.appendChild($iconoCerrarHabilidad);
-                        $habilidadesPokemonOverlay.appendChild($habilidadNombre);
-                        $habilidadesPokemonOverlay.appendChild($habilidadDescripcion);
+                            const $iconoCerrarHabilidad = document.createElement("img");
+                            const $habilidadNombre = document.createElement("p");
+                            const $habilidadDescripcion = document.createElement("p");
 
-                        $habilidadesPokemonOverlay.classList = "abilities-pokemon-overlay";
-                        $iconoCerrarHabilidad.classList = "fas fa-window-close";
-                        $habilidadNombre.textContent = e.target.id;
-                        $habilidadNombre.classList = "ability-pokemon";
+                            document
+                                .querySelector(".abilities-pokemon-container")
+                                .appendChild($habilidadesPokemonOverlay);
+                            $habilidadesPokemonOverlay.appendChild($iconoCerrarHabilidad);
+                            $habilidadesPokemonOverlay.appendChild($habilidadNombre);
+                            $habilidadesPokemonOverlay.appendChild($habilidadDescripcion);
 
-                        if (response["effect_entries"][0]["language"]["name"] === "en") {
-                            $habilidadDescripcion.textContent =
-                                response["effect_entries"][0]["effect"];
-                        } else {
-                            $habilidadDescripcion.textContent =
-                                response["effect_entries"][1]["effect"];
+                            $habilidadesPokemonOverlay.classList.add("abilities-pokemon-overlay");
+                            $iconoCerrarHabilidad.classList.add("close-overlay-ability");
+                            $iconoCerrarHabilidad.src = "assets/closeIcon.png";
+                            $iconoCerrarHabilidad.alt = "Button to close the ability's information";
+                            $habilidadNombre.textContent = e.target.id;
+                            $habilidadNombre.classList.add("ability-pokemon");
+
+                            if (response["effect_entries"][0]["language"]["name"] === "en") {
+                                $habilidadDescripcion.textContent =
+                                    response["effect_entries"][0]["effect"];
+                            } else {
+                                $habilidadDescripcion.textContent =
+                                    response["effect_entries"][1]["effect"];
+                            }
+
+                            document.querySelector('.abilities-pokemon-container').style.height = $habilidadesPokemonOverlay.clientHeight + 'px';
                         }
                     })
                     .catch((error) =>
@@ -750,10 +796,23 @@ function creaHabilidadesPokemon(response) {
         });
 }
 
+document.querySelector("main").addEventListener("click", e => {
+    if (e.target.classList.contains("close-overlay-ability")) {
+        document.querySelector(".abilities-pokemon-container").removeChild(document.querySelector(".abilities-pokemon-overlay"));
+
+        document.querySelector('.abilities-pokemon-container').style.height = "min-content";
+    }
+});
+
 function creaStatsPokemon(response) {
     const $statsPokemon = document.createElement("div");
+    const $statsPokemonTitle = document.createElement("p");
 
     document.querySelector("#overlay").appendChild($statsPokemon);
+    $statsPokemon.appendChild($statsPokemonTitle);
+
+    $statsPokemon.classList.add("stats-pokemon-container");
+    $statsPokemonTitle.textContent = "STATS";
 
     response["stats"].forEach((stat, index) => {
         const $statPokemon = document.createElement("div");
@@ -762,7 +821,8 @@ function creaStatsPokemon(response) {
         $statsPokemon.appendChild($statPokemon);
         $statPokemon.appendChild($statDescripcion);
 
-        $statDescripcion.textContent = `${response["stats"][index]["stat"]["name"]}: ${response["stats"][index]["base_stat"]}`;
+        $statDescripcion.textContent = `${response["stats"][index]["stat"]["name"].toUpperCase()}: ${response["stats"][index]["base_stat"]}/100`;
+        $statPokemon.classList.add("stat-pokemon");
     });
 }
 
@@ -783,30 +843,58 @@ function creaCadenaEvolutivaPokemon(response) {
                     $cadenaEvolutivaContainer.appendChild($tituloCadenaEvolutiva);
                     $cadenaEvolutivaContainer.appendChild($cadenaEvolutiva);
 
-                    $cadenaEvolutivaContainer.classList = "evolution-container";
-                    $tituloCadenaEvolutiva.textContent = "Evolution chain";
+                    $cadenaEvolutivaContainer.classList.add("evolution-container");
+                    $tituloCadenaEvolutiva.textContent = "EVOLUTION CHAIN";
 
                     let eslabonEvolucion = response["chain"]["evolves_to"];
                     let eslabonNombre = response["chain"]["species"]["name"];
 
-                    const $eslabonPokemon = document.createElement("a");
+                    const $eslabonPokemon = document.createElement("div");
+                    const $eslabonPokemonNombre = document.createElement("p");
 
                     $cadenaEvolutiva.appendChild($eslabonPokemon);
+                    $cadenaEvolutiva.appendChild($eslabonPokemonNombre);
 
-                    $eslabonPokemon.textContent = eslabonNombre;
-                    $eslabonPokemon.classList = "eslabon-pokemon";
+                    $eslabonPokemon.classList.add("pokemon-image");
+                    $eslabonPokemonNombre.textContent = eslabonNombre;
+
+                    fetch(`https://pokeapi.co/api/v2/pokemon/${eslabonNombre}`)
+                        .then((response) => response.json())
+                        .then((response) => {
+                           estableceImagenPokemon(response, $eslabonPokemon);
+                        })
+                        .catch((error) =>
+                            console.error("Fallo la carga de la info del pokemon", error)
+                        );
+
+                    putArrow($cadenaEvolutiva);
 
                     while (eslabonEvolucion && eslabonEvolucion != 0) {
                         eslabonNombre = eslabonEvolucion["0"]["species"]["name"];
                         eslabonEvolucion = eslabonEvolucion["0"]["evolves_to"];
 
-                        const $eslabonPokemon = document.createElement("a");
+                        const $eslabonPokemon = document.createElement("div");
+                        const $eslabonPokemonNombre = document.createElement("p");
 
                         $cadenaEvolutiva.appendChild($eslabonPokemon);
+                        $cadenaEvolutiva.appendChild($eslabonPokemonNombre);
 
-                        $eslabonPokemon.textContent = eslabonNombre;
-                        $eslabonPokemon.classList = "eslabon-pokemon";
+                        $eslabonPokemon.classList.add("pokemon-image");
+                        $eslabonPokemonNombre.textContent = eslabonNombre;
+
+                        fetch(`https://pokeapi.co/api/v2/pokemon/${eslabonNombre}`)
+                            .then((response) => response.json())
+                            .then((response) => {
+                                estableceImagenPokemon(response, $eslabonPokemon);
+                            })
+                            .catch((error) =>
+                                console.error("Fallo la carga de la info del pokemon", error)
+                            );
+
+                        putArrow($cadenaEvolutiva);
                     }
+                    document.querySelector(".evolution-container").lastElementChild.lastElementChild.style.display = "none"; /* Delete last arrow */
+
                 })
                 .catch((error) =>
                     console.error(
@@ -820,12 +908,24 @@ function creaCadenaEvolutivaPokemon(response) {
         );
 }
 
+function putArrow($container) {
+    const $arrow = document.createElement("img");
+
+    $container.appendChild($arrow);
+
+    $arrow.src = "assets/arrowDown.png";
+    $arrow.alt = "Image of an arrow pointing down";
+    $arrow.classList.add("arrow-down");
+}
+
 document.querySelector("main").addEventListener("click", (e) => {
     if (e.target.classList.contains("eslabon-pokemon")) {
         fetch(`https://pokeapi.co/api/v2/pokemon/${e.target.textContent}`)
             .then((response) => response.json())
             .then((response) => {
                 muestraOverlay();
+                ocultaScrollBody();
+                blurPage();
                 creaInfoPokemon(response);
             })
             .catch((error) =>
@@ -840,6 +940,8 @@ document.querySelector("main").addEventListener("click", (e) => {
         ocultaMensajeBusquedaFallida();
         limpiaContenedorPokemons();
         muestraCargando();
+        muestraScrollBody();
+        unBlurPage();
         ocultaOverlay();
 
         if (e.target.textContent === "unknown") {
@@ -847,7 +949,7 @@ document.querySelector("main").addEventListener("click", (e) => {
             $containerPokemons.textContent = "Ups. There're not Pokemons in that habitat. Try again with another" +
                 " habitat!";
         } else {
-            fetch(`https://pokeapi.co/api/v2/pokemon-habitat/${e.target.textContent}`)
+            fetch(`https://pokeapi.co/api/v2/pokemon-habitat/${e.target.textContent.toLowerCase()}`)
                 .then((response) => response.json())
                 .then((response) => {
                     ocultaCargando();
@@ -868,6 +970,8 @@ document.querySelector("main").addEventListener("click", (e) => {
         ocultaBusquedaAvanzadaForm();
         limpiaContenedorPokemons();
         muestraCargando();
+        muestraScrollBody();
+        unBlurPage();
         ocultaOverlay();
         fetch(
             `https://pokeapi.co/api/v2/type/${e.target.textContent.toLowerCase()}`
@@ -892,6 +996,8 @@ document.querySelector("main").addEventListener("click", (e) => {
         ocultaBusquedaAvanzadaForm();
         ocultaMensajeBusquedaFallida();
         limpiaContenedorPokemons();
+        muestraScrollBody();
+        unBlurPage();
         muestraCargando();
         fetch(
             `https://pokeapi.co/api/v2/ability/${e.target.textContent.toLowerCase()}`
@@ -1167,7 +1273,7 @@ function estableceClasesCardPokemon($cardPokemon) {
     $cardPokemon.classList.add("card", "nes-container", "is-dark", "is-rounded", "nes-pointer");
 }
 
-function creaTiposPokemonCard($tiposPokemon, tipo) {
+function creaTiposPokemonBadge($tiposPokemon, tipo) {
     const $tipoPokemon = document.createElement("a");
     const $textoTipoPokemon = document.createElement("span");
 
@@ -1225,9 +1331,62 @@ document.querySelector("#btn-scroll-top").addEventListener("click", (e) => {
 });
 
 function muestraMensajeBusquedaFallida() {
-    document.querySelector('#text-error-search').classList.remove('oculto');
+    document.querySelector("#text-error-search").classList.remove("oculto");
 }
 
 function ocultaMensajeBusquedaFallida() {
-    document.querySelector('#text-error-search').classList.add('oculto');
+    document.querySelector("#text-error-search").classList.add("oculto");
+}
+
+function ocultaScrollBody() {
+    document.querySelector("body").style.overflow = "hidden";
+}
+
+function muestraScrollBody() {
+    document.querySelector("body").style.overflow = "visible";
+}
+
+function blurPage() {
+    document.querySelector("header").style.filter = "blur(10px)";
+    document.querySelector("#cargando").style.filter = "blur(10px)";
+    document.querySelector("#text-error-search").style.filter = "blur(10px)";
+    document.querySelector("#container-pokemons").style.filter = "blur(10px)";
+    document.querySelector("#load-buttons-container").style.filter = "blur(10px)";
+    document.querySelector("footer").style.filter = "blur(10px)";
+
+    document.querySelector("header").style.pointerEvents = "none";
+    document.querySelector("#cargando").style.pointerEvents = "none";
+    document.querySelector("#text-error-search").style.pointerEvents = "none";
+    document.querySelector("#container-pokemons").style.pointerEvents = "none";
+    document.querySelector("#load-buttons-container").style.pointerEvents = "none";
+    document.querySelector("footer").style.pointerEvents = "none";
+
+    document.querySelector("body").classList.add("dark-overlay");
+}
+
+function unBlurPage() {
+    document.querySelector("header").style.filter = "none";
+    document.querySelector("#cargando").style.filter = "none";
+    document.querySelector("#text-error-search").style.filter = "none";
+    document.querySelector("#container-pokemons").style.filter = "none";
+    document.querySelector("#load-buttons-container").style.filter = "none";
+    document.querySelector("footer").style.filter = "none";
+
+    document.querySelector("header").style.pointerEvents = "all";
+    document.querySelector("#cargando").style.pointerEvents = "all";
+    document.querySelector("#text-error-search").style.pointerEvents = "all";
+    document.querySelector("#container-pokemons").style.pointerEvents = "all";
+    document.querySelector("#load-buttons-container").style.pointerEvents = "all";
+    document.querySelector("footer").style.pointerEvents = "all";
+
+    document.querySelector("body").classList.remove("dark-overlay");
+}
+
+function putSeparationBar() {
+    const $separationBar = document.createElement("img");
+    document.querySelector("#overlay").appendChild($separationBar);
+
+    $separationBar.src = "assets/separationBar.png";
+    $separationBar.alt = "Image of a line that separates this section from the next one."
+    $separationBar.classList.add("separation-bar");
 }
