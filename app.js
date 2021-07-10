@@ -57,7 +57,7 @@ document.querySelector("#busqueda-pokemon").addEventListener("submit", (e) => {
         controllerBusquedaSimple.abort();
     }
 
-    const pokemonBuscado = document.querySelector("#search-pokemon").value.trim();
+    const pokemonBuscado = document.querySelector("#search-pokemon").value.trim().toLowerCase();
 
     const regularExpressionNumbers = /^[0-9]+$/;
 
@@ -490,7 +490,7 @@ function creaImagenPokemon(response) {
     estableceImagenPokemon(response, $imagenPokemon);
 }
 
-function creaContainerPesoAlturaYHabitat () {
+function creaContainerPesoAlturaYHabitat() {
     const $container = document.createElement("div");
     $container.classList.add("weight-height-habitat-container");
     document.querySelector("#overlay").appendChild($container);
@@ -783,7 +783,7 @@ function creaHabilidadesPokemon(response) {
                                     response["effect_entries"][1]["effect"];
                             }
 
-                            document.querySelector('.abilities-pokemon-container').style.height = $habilidadesPokemonOverlay.clientHeight + 'px';
+                            document.querySelector(".abilities-pokemon-container").style.height = $habilidadesPokemonOverlay.clientHeight + "px";
                         }
                     })
                     .catch((error) =>
@@ -800,7 +800,7 @@ document.querySelector("main").addEventListener("click", e => {
     if (e.target.classList.contains("close-overlay-ability")) {
         document.querySelector(".abilities-pokemon-container").removeChild(document.querySelector(".abilities-pokemon-overlay"));
 
-        document.querySelector('.abilities-pokemon-container').style.height = "min-content";
+        document.querySelector(".abilities-pokemon-container").style.height = "min-content";
     }
 });
 
@@ -861,7 +861,7 @@ function creaCadenaEvolutivaPokemon(response) {
                     fetch(`https://pokeapi.co/api/v2/pokemon/${eslabonNombre}`)
                         .then((response) => response.json())
                         .then((response) => {
-                           estableceImagenPokemon(response, $eslabonPokemon);
+                            estableceImagenPokemon(response, $eslabonPokemon);
                         })
                         .catch((error) =>
                             console.error("Fallo la carga de la info del pokemon", error)
@@ -1387,6 +1387,6 @@ function putSeparationBar() {
     document.querySelector("#overlay").appendChild($separationBar);
 
     $separationBar.src = "assets/separationBar.png";
-    $separationBar.alt = "Image of a line that separates this section from the next one."
+    $separationBar.alt = "Image of a line that separates this section from the next one.";
     $separationBar.classList.add("separation-bar");
 }
