@@ -80,8 +80,6 @@ document.querySelector("#busqueda-pokemon").addEventListener("submit", (e) => {
                     ocultaCargando();
                     muestraMensajeBusquedaFallida();
                     console.error("Fallo la busqueda del Pokemon", error);
-                } else {
-                    console.log("Fetch busqueda simple aborted");
                 }
             });
     } else {
@@ -106,8 +104,6 @@ document.querySelector("#busqueda-pokemon").addEventListener("submit", (e) => {
                                 "Fallo la carga de la informacion basica del Pokemon buscado (busqueda simple)",
                                 error
                             );
-                        } else {
-                            console.log("Fetch busqueda simple aborted");
                         }
                     }
                 })();
@@ -150,7 +146,7 @@ document
             habitatRequerido,
             abilitySelectedIndex,
             abilitySelected,
-            $typesPokemonForm
+           typesRequired
         } = obtieneDatosRequeridosBusquedaAvanzada();
 
         fetch("https://pokeapi.co/api/v2/pokemon/?offset=0&limit=1000000")
@@ -162,10 +158,7 @@ document
                         signalBusquedaAvanzada = controllerBusquedaAvanzada.signal;
 
                         for (let i = 0; i < response["results"].length; i++) {
-                            console.log($typesPokemonForm[0].value + "  " + $typesPokemonForm[0].checked);
-                            console.log($typesPokemonForm[2].value + "  " + $typesPokemonForm[2].checked);
-                            console.log($typesPokemonForm[4].value + "  " + $typesPokemonForm[4].checked);
-                            await encuentraPokemonBusquedaAvanzada(response["results"][i], habitatRequerido, abilitySelectedIndex, abilitySelected, $typesPokemonForm, signalBusquedaAvanzada);
+                            await encuentraPokemonBusquedaAvanzada(response["results"][i], habitatRequerido, abilitySelectedIndex, abilitySelected, typesRequired, signalBusquedaAvanzada);
                         }
 
                         if ($containerPokemons.textContent === "") {
@@ -180,8 +173,6 @@ document
 
                             ocultaCargando();
                             muestraMensajeBusquedaFallida();
-                        } else {
-                            console.log("Fetch busqueda avanzada aborted");
                         }
                     }
                 })();
@@ -202,9 +193,15 @@ function obtieneDatosRequeridosBusquedaAvanzada() {
         "#busqueda-avanzada-form [name='type-pokemon']"
     );
 
-    console.log("En funcion OBTIENEDATOSREQUERIDOSBUSQUEDAAVANZADA");
+    const typesRequired = [];
 
-    return {habitatRequerido, abilitySelectedIndex, abilitySelected, $typesPokemonForm};
+    $typesPokemonForm.forEach((typesPokemon, index) => {
+        if (typesPokemon.checked === true) {
+            typesRequired.push(typesPokemon.value);
+        }
+    });
+
+    return {habitatRequerido, abilitySelectedIndex, abilitySelected, typesRequired};
 }
 
 $containerPokemons.addEventListener("click", function (e) {
@@ -1142,35 +1139,26 @@ function limpiaContenedorPokemons() {
     document.querySelector("#carga-todos").classList = "oculto";
 }
 
-async function encuentraPokemonBusquedaAvanzada(pokemon, habitatRequerido, abilitySelectedIndex, abilitySelected, $typesPokemonForm, signalBusquedaAvanzada) {
-    let typesRequeridos = 0;
+async function encuentraPokemonBusquedaAvanzada(pokemon, habitatRequerido, abilitySelectedIndex, abilitySelected, typesRequired, signalBusquedaAvanzada) {
     let typesCoincidentes = 0;
-
-    $typesPokemonForm.forEach((typesPokemon) => {
-        if (typesPokemon.checked === true) {
-            typesRequeridos++;
-        }
-    });
+    const typesRequeridosCounter = typesRequired.length;
 
     const response = await fetch(pokemon["url"], {"signal": signalBusquedaAvanzada});
     const pokemonInfo = await response.json();
 
-    if (typesRequeridos > 2) {
+    if (typesRequeridosCounter > 2) {
         throw new Error("A Pokemon can have only 2 or less types.");
     }
 
-    for (let i = 0; i < $typesPokemonForm.length; i++) {
-        if ($typesPokemonForm[i].checked === true) {
-            const condicion = $typesPokemonForm[i].value;
+    for (let i = 0; i < typesRequired.length; i++) {
 
             for (let j = 0; j < pokemonInfo["types"].length; j++) {
-                if (pokemonInfo["types"][j]["type"]["name"] === condicion) {
+                if (pokemonInfo["types"][j]["type"]["name"] === typesRequired[i]) {
                     typesCoincidentes++;
-                    break;
                 }
             }
-        }
-        if (typesCoincidentes === typesRequeridos) {
+
+        if (typesCoincidentes === typesRequeridosCounter) {
             if (
                 abilitySelectedIndex === 0 ||
                 abilitySelectedIndex === -1
